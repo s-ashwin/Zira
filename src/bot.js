@@ -10,11 +10,15 @@ client.on('ready', ()=>{
 
 client.on('message', (message)=>{
     if(!message.author.bot){
+        //GENERAL
         if(message.content.toLowerCase()==='hello' || message.content.toLowerCase()==='hi'){
             message.reply(`Hey ${message.author.username}!`);
         }
         if(message.content.toLowerCase()==='hey zira' || message.content.toLowerCase()==='zira'){
-            message.reply(`Hey ${message.author.username}! This is Zira, How can i help you?`);
+            message.reply(`Hey ${message.author.username}! This is Zira, Here is the list of commands you can use \n !kick @user - Kicks the user out of the server \n !weather cityname - Displays weather report`);
+        }
+        if(message.content.toLowerCase()===`what's your name` || message.content.toLowerCase()===`what is your name` || message.content.toLowerCase()===`who are you`){
+            message.reply(`Hey ${message.author.username}! This is Zira, I am a Bot`);
         }
 
         //COMMANDS
