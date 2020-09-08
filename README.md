@@ -1,0 +1,2 @@
+# Zira
+## A discord bot
