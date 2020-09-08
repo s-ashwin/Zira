@@ -43,6 +43,25 @@ client.on('message', (message)=>{
                 }
             }
             
+            //WEATHER
+            if (command === 'weather') {
+                const args = message.content.slice(prefix.length).trim().split(' ');
+                if (args[1]) {
+                    async function getweather() {
+                        try {
+                          const {data} = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${args[1]}&appid=${process.env.WEATHER_API_KEY}`);
+                          message.reply(`\n Temperature: ${Math.round(data.main.temp - 273.15)} °C \n Feels Like: ${Math.round(data.main.feels_like - 273.15)} °C \n Humidity: ${data.main.humidity}%`)
+                        } catch (error) {
+                          console.error(error);
+                          message.reply("City not found")
+                        }
+                      }
+                    getweather();
+                }
+                else{
+                    message.reply("Please provide a city")
+                }
+            }
         }
         }
         
