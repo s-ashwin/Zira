@@ -16,7 +16,7 @@ client.on('message', (message)=>{
             message.reply(`Hey ${message.author.username}!`);
         }
         if(message.content.toLowerCase()==='hey zira' || message.content.toLowerCase()==='zira'){
-            message.reply(`Hey ${message.author.username}! This is Zira, Here is the list of commands you can use \n !kick @user - Kicks the user out of the server \n !weather cityname - Displays weather report`);
+            message.reply(`Hey ${message.author.username}! This is Zira, Here is the list of commands you can use \n**!kick** @user - Kicks the user out of the server \n**!weather** cityname - Gives weather report\n**!movie** title - Gives movie info`);
         }
         if(message.content.toLowerCase()===`what's your name` || message.content.toLowerCase()===`what is your name` || message.content.toLowerCase()===`who are you`){
             message.reply(`Hey ${message.author.username}! This is Zira, I am a Bot`);
@@ -61,6 +61,34 @@ client.on('message', (message)=>{
                 }
                 else{
                     message.reply("Please provide a city")
+                }
+            }
+
+            //MOVIE
+            if (command === 'movie') {
+                const args = message.content.slice(prefix.length+5).trim();
+                if (args) {
+                    async function getmovie() {
+                        try {
+                          const {data} = await axios.get(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API}&t=${args}`);
+                          if(data.Response ==='True' && data.Poster!== 'N/A'){
+                            message.reply(`\n**Plot:** ${data.Plot} \n**Director:** ${data.Director} \n**Actors:** ${data.Actors} \n**IMDb Rating:** ${data.imdbRating}/10`, {files: [data.Poster]})
+                          }
+                          else if(data.Response ==='True'){
+                            message.reply(`\n**Plot:** ${data.Plot} \n**Director:** ${data.Director}`)
+                          }
+                          else{
+                            message.reply("Movie not found")
+                          }
+                        } catch (error) {
+                          console.error(error);
+                          message.reply("Movie not found")
+                        }
+                      }
+                    getmovie();
+                }
+                else{
+                    message.reply("Please provide a movie name")
                 }
             }
         }
