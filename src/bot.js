@@ -22,6 +22,16 @@ client.on('message', (message)=>{
             message.reply(`Hey ${message.author.username}! This is Zira, I am a Bot`);
         }
 
+        //BELIKEBILL
+        if (message.content.toLowerCase().startsWith("be like")) {
+          const args = message.content.slice(7).trim();
+          if (args) {
+            message.channel.send({files: [{attachment: `https://belikebill.ga/billgen-API.php?default=1&name=${args}`,name: "meme.jpeg"}]})
+          } else {
+            message.reply("Please provide a name")
+          }
+        }
+
         //COMMANDS
         if(message.content.startsWith(prefix)){
             const command = message.content.slice(prefix.length).trim().split(' ').shift();
