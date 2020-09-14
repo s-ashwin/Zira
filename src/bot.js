@@ -1,7 +1,7 @@
 require('dotenv').config();
 const axios = require('axios');
 
-const{Client} = require('discord.js');
+const{Client, Guild} = require('discord.js');
 const client = new Client();
 const prefix = "!";
 
@@ -53,6 +53,24 @@ client.on('message', (message)=>{
                     message.reply(`You don't have permissions to use this command`)
                 }
             }
+
+            //BAN
+            if(command === "ban"){ 
+              if(message.member.hasPermission("BAN_MEMBERS")){
+                  const user = message.mentions.members.first();
+                  if(user){
+                      Guild.members.ban(user)
+                      .then((banneduser)=>message.channel.send(`${banneduser} was banned`))
+                      .catch((err)=>message.channel.send(`Sorry, I couldn't do that`))
+                  }
+                  else{
+                      message.reply("Please mention a valid user to ban")
+                  }      
+                  }
+              else{
+                  message.reply(`You don't have permissions to use this command`)
+              }
+          }
             
             //WEATHER
             if (command === 'weather') {
