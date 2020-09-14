@@ -59,7 +59,7 @@ client.on('message', (message)=>{
               if(message.member.hasPermission("BAN_MEMBERS")){
                   const user = message.mentions.members.first();
                   if(user){
-                      Guild.members.ban(user)
+                      message.guild.members.ban(user)
                       .then((banneduser)=>message.channel.send(`${banneduser} was banned`))
                       .catch((err)=>message.channel.send(`Sorry, I couldn't do that`))
                   }
