@@ -144,6 +144,25 @@ client.on('message', (message)=>{
               }
             }
 
+            //FLIP
+            if (command === 'flip') {
+              const args = message.content.slice(prefix.length+4).trim();
+              if (args) {
+                message.delete()
+                const mapping = '¡"#$%⅋,)(*+\'-˙/0ƖᄅƐㄣϛ9ㄥ86:;<=>?@∀qƆpƎℲפHIſʞ˥WNOԀQɹS┴∩ΛMX⅄Z[/]^_`ɐqɔpǝɟƃɥᴉɾʞlɯuodbɹsʇnʌʍxʎz{|}~';
+                const OFFSET = '!'.charCodeAt(0);
+                message.channel.send(
+                  args.split('')
+                      .map(c => c.charCodeAt(0) - OFFSET)
+                      .map(c => mapping[c] || ' ')
+                      .reverse().join('')
+              );
+              }
+              else{
+                  message.reply("Please provide a text to flip")
+              }
+          }
+
         }
         }
         
