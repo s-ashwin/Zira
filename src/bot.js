@@ -163,6 +163,29 @@ client.on('message', (message)=>{
               }
           }
 
+           //CLEAR
+           if (command === 'clear') {
+            const args = message.content.slice(prefix.length+5).trim();
+            if (args) {
+              if(!message.member.hasPermission("MANAGE_MESSAGES")){
+                message.reply("You don't have premssions to do that!");
+              }
+              else{
+                message.channel.bulkDelete(args[0])
+                  .then(() => {
+                      message.channel.send(`Cleared ${args} messages`)
+                        .then(msg => msg.delete({timeout : 2000}));
+                  });
+              }
+            
+            }
+            else{
+                message.reply("Please enter the number of messages to clear")
+                .then(msg => msg.delete({timeout : 2000}));
+            }
+            message.delete();
+        }
+
         }
         }
         
