@@ -1,7 +1,7 @@
 require('dotenv').config();
 const axios = require('axios');
 
-const{Client, Guild} = require('discord.js');
+const{Client} = require('discord.js');
 const client = new Client();
 const prefix = "!";
 
