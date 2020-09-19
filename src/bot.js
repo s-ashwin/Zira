@@ -74,7 +74,7 @@ client.on('message', (message)=>{
             
             //WEATHER
             if (command === 'weather') {
-                const args = message.content.slice(prefix.length+7).trim();
+                const args = message.content.slice(prefix.length + command.length).trim();
                 if (args) {
                     async function getweather() {
                         try {
@@ -94,7 +94,7 @@ client.on('message', (message)=>{
 
             //MOVIE
             if (command === 'movie') {
-                const args = message.content.slice(prefix.length+5).trim();
+                const args = message.content.slice(prefix.length + command.length).trim();
                 if (args) {
                     async function getmovie() {
                         try {
@@ -122,7 +122,7 @@ client.on('message', (message)=>{
 
             //MEANING
             if (command === 'def') {
-              const args = message.content.slice(prefix.length+3).trim();
+              const args = message.content.slice(prefix.length + command.length).trim();
               if (args) {
                 async function getmeaning() {
                   try {
@@ -146,7 +146,7 @@ client.on('message', (message)=>{
 
             //FLIP
             if (command === 'flip') {
-              const args = message.content.slice(prefix.length+4).trim();
+              const args = message.content.slice(prefix.length + command.length).trim();
               if (args) {
                 message.delete()
                 const mapping = '¡"#$%⅋,)(*+\'-˙/0ƖᄅƐㄣϛ9ㄥ86:;<=>?@∀qƆpƎℲפHIſʞ˥WNOԀQɹS┴∩ΛMX⅄Z[/]^_`ɐqɔpǝɟƃɥᴉɾʞlɯuodbɹsʇnʌʍxʎz{|}~';
@@ -165,7 +165,7 @@ client.on('message', (message)=>{
 
            //CLEAR
            if (command === 'clear') {
-            const args = message.content.slice(prefix.length+5).trim();
+            const args = message.content.slice(prefix.length + command.length).trim();
             if (args) {
               if(!message.member.hasPermission("MANAGE_MESSAGES")){
                 message.reply("You don't have premssions to do that!");
