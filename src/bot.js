@@ -22,10 +22,10 @@ client.on('message', (message)=>{
             message.reply(`Hey ${message.author.username}! This is Zira, I am a Bot`);
         }
 
-          //THANKS
-          if (message.content.toLowerCase().includes("thanks") ||  message.content.toLowerCase().includes("thank")) {
-            message.react('❤️');
-          }
+        //THANKS
+        if (message.content.toLowerCase().includes("thank")) {
+          message.react('❤️');
+        }
 
         //BELIKEBILL
         if (message.content.toLowerCase().startsWith("be like")) {
