@@ -176,7 +176,7 @@ client.on('message', (message)=>{
                 message.reply("You don't have premssions to do that!");
               }
               else{
-                message.channel.bulkDelete(args+1)
+                message.channel.bulkDelete(parseInt(args)+1)
                   .then(() => {
                       message.channel.send(`Cleared ${args} messages`)
                         .then(msg => msg.delete({timeout : 2000}));
