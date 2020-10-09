@@ -176,7 +176,7 @@ client.on('message', (message)=>{
                 message.reply("You don't have premssions to do that!");
               }
               else{
-                message.channel.bulkDelete(args[0])
+                message.channel.bulkDelete(args+1)
                   .then(() => {
                       message.channel.send(`Cleared ${args} messages`)
                         .then(msg => msg.delete({timeout : 2000}));
@@ -188,7 +188,6 @@ client.on('message', (message)=>{
                 message.reply("Please enter the number of messages to clear")
                 .then(msg => msg.delete({timeout : 2000}));
             }
-            message.delete();
         }
 
         }
