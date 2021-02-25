@@ -1,5 +1,12 @@
 require('dotenv').config();
 const axios = require('axios');
+const Scraper = require('images-scraper');
+
+const google = new Scraper({
+  puppeteer: {
+    headless: false,
+  },
+});
 
 const{Client} = require('discord.js');
 const client = new Client();
