@@ -4,7 +4,7 @@ const Scraper = require('images-scraper');
 
 const google = new Scraper({
   puppeteer: {
-    headless: false,
+    headless: true,
   },
 });
 
@@ -195,6 +195,26 @@ client.on('message', (message)=>{
                 message.reply("Please enter the number of messages to clear")
                 .then(msg => msg.delete({timeout : 2000}));
             }
+        }
+
+        //IMG
+        if (command === 'img') {
+          const args = message.content.slice(prefix.length + command.length).trim();
+          if (args) {
+              async function getImg() {
+                  try {
+                      const result = await google.scrape(`${args}`,1);
+                      message.channel.send({files: [{attachment:result[0].url, name:"result.jpg"}]})
+                  } catch (error) {
+                    console.error(error);
+                    message.reply("Image not found")
+                  }
+                }
+              getImg();
+          }
+          else{
+              message.reply("What kind of image are you looking for?")
+          }
         }
 
         }
