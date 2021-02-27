@@ -23,7 +23,7 @@ client.on('message', (message)=>{
             message.reply(`Hey ${message.author.username}!`);
         }
         if(message.content.toLowerCase()==='hey zira' || message.content.toLowerCase()==='zira'){
-            message.reply(`Hey ${message.author.username}! This is Zira, Here is the list of commands you can use \n**!kick** @user - Kicks the user out of the server \n**!ban** @user - Ban user \n**!weather** cityname - Gives weather report\n**!movie** title - Gives movie info \n**!def** word - Gives definition `);
+            message.reply(`Hey ${message.author.username}! This is Zira, Here is the list of commands you can use \n**!kick** @user - Kicks the user out of the server \n**!ban** @user - Ban user \n**!weather** cityname - Gives weather report\n**!movie** title - Gives movie info \n**!def** word - Gives definition \n**!img** subject - Gives Image`);
         }
         if(message.content.toLowerCase()===`what's your name` || message.content.toLowerCase()===`what is your name` || message.content.toLowerCase()===`who are you`){
             message.reply(`Hey ${message.author.username}! This is Zira, I am a Bot`);
