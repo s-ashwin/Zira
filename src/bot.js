@@ -12,6 +12,18 @@ const{Client} = require('discord.js');
 const client = new Client();
 const prefix = "!";
 
+const { Player } = require("discord-music-player");
+const player = new Player(client, {
+  leaveOnEnd: false,
+  leaveOnStop: false,
+  leaveOnEmpty: true,
+  timeout: 0,
+  volume: 150,
+  quality: 'high', // This options are optional.
+});
+// You can define the Player as *client.player* to easly access it.
+client.player = player;
+
 client.on('ready', ()=>{
     console.log("Hey i'm in");
 })
@@ -215,6 +227,29 @@ client.on('message', (message)=>{
           else{
               message.reply("What kind of image are you looking for?")
           }
+        }
+
+        //MUSIC
+        if(command === 'play'){
+          const args = message.content.slice(prefix.length + command.length).trim();
+          if (args) {
+            async function play() {
+                try {
+                  let song = await client.player.play(message, args);
+                  message.reply(`Started playing ${song.name}`);        
+                  return;
+                } catch (error) {
+                  console.error(error);
+                  message.reply("Song not found")
+                }
+              }
+            play();
+        }
+        }
+        if(command === 'stop'){
+          let isDone = client.player.stop(message);
+          if(isDone)
+              message.channel.send('Music stopped');
         }
 
         }
