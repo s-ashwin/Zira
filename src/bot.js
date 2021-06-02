@@ -15,14 +15,28 @@ const prefix = "!";
 const { Player } = require("discord-music-player");
 const player = new Player(client, {
   leaveOnEnd: false,
-  leaveOnStop: false,
+  leaveOnStop: true,
   leaveOnEmpty: true,
   timeout: 0,
   volume: 150,
-  quality: 'high', // This options are optional.
+  quality: 'high',
 });
-// You can define the Player as *client.player* to easly access it.
+
 client.player = player;
+
+client.player.on('error', (error, message) => {
+  switch (error) {
+    case 'VoiceChannelTypeInvalid':
+      message.channel.send(`You need to be in a Voice Channel to play music.`);
+      break;
+    case 'SearchIsNull':
+      message.channel.send(`No song with that query was found.`);
+      break;
+    default:
+      message.channel.send(`**Unknown Error Ocurred:** ${error}`);
+      break;
+  }
+})
 
 client.on('ready', ()=>{
     console.log("Hey i'm in");
@@ -31,11 +45,11 @@ client.on('ready', ()=>{
 client.on('message', (message)=>{
     if(!message.author.bot){
         //GENERAL
-        if(message.content.toLowerCase()==='hello' || message.content.toLowerCase()==='hi'){
+        if(message.content.toLowerCase()==='hello' || message.content.toLowerCase()==='hi' || message.content.toLowerCase()==='hey'){
             message.reply(`Hey ${message.author.username}!`);
         }
         if(message.content.toLowerCase()==='hey zira' || message.content.toLowerCase()==='zira'){
-            message.reply(`Hey ${message.author.username}! This is Zira, Here is the list of commands you can use \n**!kick** @user - Kicks the user out of the server \n**!ban** @user - Ban user \n**!weather** cityname - Gives weather report\n**!movie** title - Gives movie info \n**!def** word - Gives definition \n**!img** subject - Gives Image`);
+            message.reply(`Hey ${message.author.username}! This is Zira, Here is the list of commands you can use \n**!kick** @user - Kicks the user out of the server \n**!ban** @user - Ban user \n**!weather** cityname - Gives weather info\n**!movie** title - Gives movie info \n**!def** word - Gives definition \n**!img** subject - Gives Image \n**!play** song - Plays your favourite song`);
         }
         if(message.content.toLowerCase()===`what's your name` || message.content.toLowerCase()===`what is your name` || message.content.toLowerCase()===`who are you`){
             message.reply(`Hey ${message.author.username}! This is Zira, I am a Bot`);
@@ -236,11 +250,10 @@ client.on('message', (message)=>{
             async function play() {
                 try {
                   let song = await client.player.play(message, args);
-                  message.reply(`Started playing ${song.name}`);        
+                  if(song){message.reply(`🎧 Started playing ${song.name}`)}     
                   return;
                 } catch (error) {
                   console.error(error);
-                  message.reply("Song not found")
                 }
               }
             play();
@@ -250,6 +263,16 @@ client.on('message', (message)=>{
           let isDone = client.player.stop(message);
           if(isDone)
               message.channel.send('Music stopped');
+        }
+        if(command === 'pause'){
+          let song = client.player.pause(message);
+          if(song) 
+              message.channel.send(`${song.name} was paused!`);
+        }
+        if(command === 'resume'){
+          let song = client.player.resume(message);
+          if(song)
+              message.channel.send(`${song.name} was resumed!`);
         }
 
         }
