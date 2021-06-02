@@ -40,6 +40,7 @@ client.player.on('error', (error, message) => {
 })
 
 client.on('ready', ()=>{
+    client.user.setActivity('!commands', { type: 'LISTENING' }) 
     console.log("Hey i'm in");
 })
 
