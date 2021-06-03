@@ -15,7 +15,7 @@ const prefix = "!";
 
 const { Player } = require("discord-music-player");
 const player = new Player(client, {
-  leaveOnEnd: true,
+  leaveOnEnd: false,
   leaveOnStop: true,
   leaveOnEmpty: true,
   timeout: 0,
@@ -29,15 +29,36 @@ client.player = player;
 
 client.player.on('error', (error, message) => {
   switch (error) {
-    case 'VoiceChannelTypeInvalid':
-      message.channel.send(`You need to be in a Voice Channel to play music.`);
-      break;
     case 'SearchIsNull':
-      message.channel.send(`No song with that query was found.`);
-      break;
+        message.channel.send(`No song with that query was found.`);
+        break;
+    case 'InvalidPlaylist':
+        message.channel.send(`No Playlist was found with that link.`);
+        break;
+    case 'InvalidSpotify':
+        message.channel.send(`No Spotify Song was found with that link.`);
+        break;
+    case 'QueueIsNull':
+        message.channel.send(`There is no music playing right now.`);
+        break;
+    case 'VoiceChannelTypeInvalid':
+        message.channel.send(`You need to be in a Voice Channel to play music.`);
+        break;
+    case 'LiveUnsupported':
+        message.channel.send(`We do not support YouTube Livestreams.`);
+        break;
+    case 'VideoUnavailable':
+        message.channel.send(`Something went wrong while playing the current song, skipping...`);
+        break;
+    case 'NotANumber':
+        message.channel.send(`The provided argument was Not A Number.`);
+        break;
+    case 'MessageTypeInvalid':
+        message.channel.send(`The Message object was not provided.`);
+        break;
     default:
-      message.channel.send(`**Unknown Error Ocurred:** ${error}`);
-      break;
+        message.channel.send(`**Unknown Error Ocurred:** ${error}`);
+        break;
   }
 })
 
@@ -276,7 +297,7 @@ client.on('message', (message)=>{
                   } else {
                       let song = await client.player.play(message, args);          
                       if(song)
-                        message.reply(`Started playing ${song.name}`);
+                        message.reply(`🎧 Started playing ${song.name}`);
                       return;
                   }
                 } catch (error) {
@@ -304,8 +325,8 @@ client.on('message', (message)=>{
         if(command === 'queue'){
           let queue = client.player.getQueue(message);
           if(queue)
-              message.channel.send('Queue:\n'+(queue.songs.map((song, i) => {
-                  return `${i === 0 ? 'Now Playing' : `#${i+1}`} - ${song.name} `
+              message.channel.send(`**Queue:**\n`+(queue.songs.map((song, i) => {
+                  return `${i === 0 ? `**Now Playing**` : `**#${i+1}**`} - ${song.name} `
               }).join('\n')));
         }
         if(command === 'skip'){
