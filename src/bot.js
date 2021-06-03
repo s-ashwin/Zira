@@ -9,19 +9,21 @@ const google = new Scraper({
   },
 });
 
-const{Client} = require('discord.js');
+const{Client, MessageEmbed} = require('discord.js');
 const client = new Client();
 const prefix = "!";
 
 const { Player } = require("discord-music-player");
 const player = new Player(client, {
-  leaveOnEnd: false,
+  leaveOnEnd: true,
   leaveOnStop: true,
   leaveOnEmpty: true,
   timeout: 0,
   volume: 150,
   quality: 'high',
 });
+
+let help = null
 
 client.player = player;
 
@@ -42,6 +44,11 @@ client.player.on('error', (error, message) => {
 client.on('ready', ()=>{
     client.user.setActivity('!commands', { type: 'LISTENING' }) 
     console.log("Hey i'm in");
+    help = new MessageEmbed()
+    .setColor('#f7df1e')
+    .setAuthor('Zira', client.user.avatarURL())
+    .setDescription('Here is the list of commands you can use \n \n**!kick** @user - Kicks the user out of the server \n**!ban** @user - Ban user \n**!weather** cityname - Gives weather info\n**!movie** title - Gives movie info \n**!def** word - Gives definition \n**!img** subject - Gives Image \n**!play** song - Plays your favourite song')
+
 })
 
 client.on('guildMemberAdd', member => {
@@ -57,7 +64,7 @@ client.on('message', (message)=>{
             message.reply(`Hey ${message.author.username}!`);
         }
         if(message.content.toLowerCase()==='hey zira' || message.content.toLowerCase()==='zira'){
-            message.reply(`Hey ${message.author.username}! This is Zira, Here is the list of commands you can use \n**!kick** @user - Kicks the user out of the server \n**!ban** @user - Ban user \n**!weather** cityname - Gives weather info\n**!movie** title - Gives movie info \n**!def** word - Gives definition \n**!img** subject - Gives Image \n**!play** song - Plays your favourite song`);
+            message.reply(help)        
         }
         if(message.content.toLowerCase()===`what's your name` || message.content.toLowerCase()===`what is your name` || message.content.toLowerCase()===`who are you`){
             message.reply(`Hey ${message.author.username}! This is Zira, I am a Bot`);
@@ -82,6 +89,10 @@ client.on('message', (message)=>{
         if(message.content.startsWith(prefix)){
             const command = message.content.slice(prefix.length).trim().split(' ').shift();
 
+            //HELP
+            if (command === "help") {
+              message.reply(help) 
+            }
             //KICK
             if(command === "kick"){ 
                 if(message.member.hasPermission("KICK_MEMBERS")){
@@ -257,9 +268,17 @@ client.on('message', (message)=>{
           if (args) {
             async function play() {
                 try {
-                  let song = await client.player.play(message, args);
-                  if(song){message.reply(`🎧 Started playing ${song.name}`)}     
-                  return;
+                  if(client.player.isPlaying(message)) {
+                    let song = await client.player.addToQueue(message, args);        
+                    if(song)
+                        message.reply(`Added ${song.name} to the queue`);
+                    return;
+                  } else {
+                      let song = await client.player.play(message, args);          
+                      if(song)
+                        message.reply(`Started playing ${song.name}`);
+                      return;
+                  }
                 } catch (error) {
                   console.error(error);
                 }
@@ -281,6 +300,30 @@ client.on('message', (message)=>{
           let song = client.player.resume(message);
           if(song)
               message.channel.send(`${song.name} was resumed!`);
+        }
+        if(command === 'queue'){
+          let queue = client.player.getQueue(message);
+          if(queue)
+              message.channel.send('Queue:\n'+(queue.songs.map((song, i) => {
+                  return `${i === 0 ? 'Now Playing' : `#${i+1}`} - ${song.name} `
+              }).join('\n')));
+        }
+        if(command === 'skip'){
+          let song = client.player.skip(message);
+          if(song)
+              message.channel.send(`${song.name} was skipped!`);
+        }
+        if(command === 'clearqueue'){
+          let isDone = client.player.clearQueue(message);
+          if(isDone)
+              message.channel.send('Queue was cleared!');
+        }
+        if(command === 'remove'){
+          const args = message.content.slice(prefix.length + command.length).trim();
+          let SongID = parseInt(args[0])-1;          
+          let song = client.player.remove(message, SongID);
+          if(song)
+              message.channel.send(`Removed song ${song.name} (${args[0]}) from the Queue!`);
         }
 
         }
