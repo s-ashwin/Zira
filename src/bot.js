@@ -78,7 +78,7 @@ client.on('guildMemberAdd', member => {
   channel.send(`Welcome to the server, ${member}`);
 });
 
-client.on('message', (message)=>{
+client.on('message', async(message)=>{
     if(!message.author.bot){
         //GENERAL
         if(message.content.toLowerCase()==='hello' || message.content.toLowerCase()==='hi' || message.content.toLowerCase()==='hey'){
@@ -154,16 +154,17 @@ client.on('message', (message)=>{
             if (command === 'weather') {
                 const args = message.content.slice(prefix.length + command.length).trim();
                 if (args) {
-                    async function getweather() {
                         try {
                           const {data} = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${args}&appid=${process.env.WEATHER_API_KEY}`);
-                          message.reply(`\n Temperature: ${Math.round(data.main.temp - 273.15)} °C \n Feels Like: ${Math.round(data.main.feels_like - 273.15)} °C \n Humidity: ${data.main.humidity}%`)
+                          const embed = new MessageEmbed()
+                            .setColor('#E03B8B')
+                            .setTitle(`${args}`)
+                            .setDescription(`Temperature: ${Math.round(data.main.temp - 273.15)} °C \n Feels Like: ${Math.round(data.main.feels_like - 273.15)} °C \n Humidity: ${data.main.humidity}%`)
+                          message.reply(embed)
                         } catch (error) {
                           console.error(error);
                           message.reply("City not found")
                         }
-                      }
-                    getweather();
                 }
                 else{
                     message.reply("Please provide a city")
@@ -174,14 +175,23 @@ client.on('message', (message)=>{
             if (command === 'movie') {
                 const args = message.content.slice(prefix.length + command.length).trim();
                 if (args) {
-                    async function getmovie() {
                         try {
                           const {data} = await axios.get(`https://www.omdbapi.com/?apikey=${process.env.OMDB_API}&t=${args}`);
                           if(data.Response ==='True' && data.Poster!== 'N/A'){
-                            message.reply(`\n**Plot:** ${data.Plot} \n**Director:** ${data.Director} \n**Actors:** ${data.Actors} \n**IMDb Rating:** ${data.imdbRating}/10`, {files: [data.Poster]})
+                            const embed = new MessageEmbed()
+                              .setColor('#03C6C7')
+                              .setTitle(`${args}`)
+                              .setImage(data.Poster)
+                              .setDescription(`**Plot:** ${data.Plot} \n**Director:** ${data.Director} \n**Actors:** ${data.Actors} \n**IMDb Rating:** ${data.imdbRating}/10`)
+                            message.reply(embed)
                           }
                           else if(data.Response ==='True'){
-                            message.reply(`\n**Plot:** ${data.Plot} \n**Director:** ${data.Director}`)
+                            const embed = new MessageEmbed()
+                              .setColor('#03C6C7')
+                              .setTitle(`${args}`)
+                              .setImage(data.Poster)
+                              .setDescription(`**Plot:** ${data.Plot} \n**Director:** ${data.Director}`)
+                            message.reply(embed)
                           }
                           else{
                             message.reply("Movie not found")
@@ -190,8 +200,7 @@ client.on('message', (message)=>{
                           console.error(error);
                           message.reply("Movie not found")
                         }
-                      }
-                    getmovie();
+                    
                 }
                 else{
                     message.reply("Please provide a movie name")
@@ -202,11 +211,14 @@ client.on('message', (message)=>{
             if (command === 'def') {
               const args = message.content.slice(prefix.length + command.length).trim();
               if (args) {
-                async function getmeaning() {
                   try {
                     const {data} = await axios.get(`https://api.urbandictionary.com/v0/define?term=${args}`);
                     if (data.list[0]) {
-                      message.reply(data.list[0].definition +"\n`Results from UrbanDictionary`")
+                      const embed = new MessageEmbed()
+                          .setColor('#0099ff')
+                          .setTitle(`${args}`)
+                          .setDescription(data.list[0].definition)
+                      message.reply(embed)
                     }
                     else{
                       message.reply("No such words")
@@ -215,8 +227,6 @@ client.on('message', (message)=>{
                     console.error(error);
                     message.reply("No such words")
                   }
-                }
-              getmeaning();
               } else {
                 message.reply("Please provide a word to find meaning")
               }
@@ -267,7 +277,6 @@ client.on('message', (message)=>{
         if (command === 'img') {
           const args = message.content.slice(prefix.length + command.length).trim();
           if (args) {
-              async function getImg() {
                   try {
                       const result = await google.scrape(`${args}`,1);
                       message.channel.send({files: [{attachment:result[0].url, name:"result.jpg"}]})
@@ -275,8 +284,6 @@ client.on('message', (message)=>{
                     console.error(error);
                     message.reply("Image not found")
                   }
-                }
-              getImg();
           }
           else{
               message.reply("What kind of image are you looking for?")
@@ -287,64 +294,137 @@ client.on('message', (message)=>{
         if(command === 'play'){
           const args = message.content.slice(prefix.length + command.length).trim();
           if (args) {
-            async function play() {
+            
                 try {
                   if(client.player.isPlaying(message)) {
                     let song = await client.player.addToQueue(message, args);        
-                    if(song)
-                        message.reply(`Added ${song.name} to the queue`);
-                    return;
+                    if(song){
+                        const embed = new MessageEmbed()
+                          .setColor('#8D3DAF')
+                          .setDescription(`Added ${song.name} to the queue`)
+                        message.reply(embed)
+                        return;
+                      }
                   } else {
                       let song = await client.player.play(message, args);          
-                      if(song)
-                        message.reply(`🎧 Started playing ${song.name}`);
-                      return;
+                      if(song){
+                        const embed = new MessageEmbed()
+                          .setColor('#8D3DAF')
+                          .setDescription(`🎧 Started playing ${song.name}`)
+                        message.reply(embed)
+                        return;
+                      }
                   }
                 } catch (error) {
                   console.error(error);
                 }
-              }
-            play();
+             
         }
         }
         if(command === 'stop'){
-          let isDone = client.player.stop(message);
-          if(isDone)
-              message.channel.send('Music stopped');
+            try{
+              let isDone = await client.player.stop(message);
+              if(isDone){
+                  const embed = new MessageEmbed()
+                    .setColor('#E21717')
+                    .setDescription('Music stopped')
+                  message.reply(embed)
+                  return
+              }
+            } catch (error) {
+              console.error(error);
+            }
         }
         if(command === 'pause'){
-          let song = client.player.pause(message);
-          if(song) 
-              message.channel.send(`${song.name} was paused!`);
+          try{
+            let song = await client.player.pause(message);
+            if(song){
+                const embed = new MessageEmbed()
+                  .setColor('#E8BD0D')
+                  .setDescription(`${song.name} was paused!`)
+                message.reply(embed)
+                return
+            }
+          } catch (error) {
+            console.error(error);
+          }
         }
         if(command === 'resume'){
-          let song = client.player.resume(message);
-          if(song)
-              message.channel.send(`${song.name} was resumed!`);
+          try{
+            let song = await client.player.resume(message);
+            if(song){
+                const embed = new MessageEmbed()
+                  .setColor('#00D84A')
+                  .setDescription(`${song.name} was resumed!`)
+                message.reply(embed)
+                return
+              }
+          } catch (error) {
+            console.error(error);
+          }
         }
         if(command === 'queue'){
-          let queue = client.player.getQueue(message);
-          if(queue)
-              message.channel.send(`**Queue:**\n`+(queue.songs.map((song, i) => {
-                  return `${i === 0 ? `**Now Playing**` : `**#${i+1}**`} - ${song.name} `
-              }).join('\n')));
+          try{
+            let queue = await client.player.getQueue(message);
+            if(queue){
+                const embed = new MessageEmbed()
+                  .setColor('#12B0E8')
+                  .setTitle(`**Queue:**`)
+                  .setDescription((queue.songs.map((song, i) => {
+                        return `${i === 0 ? `**Now Playing**` : `**#${i+1}**`} - ${song.name} `
+                    }).join('\n')))
+                message.reply(embed)
+                // message.channel.send(`**Queue:**\n`+(queue.songs.map((song, i) => {
+                //     return `${i === 0 ? `**Now Playing**` : `**#${i+1}**`} - ${song.name} `
+                // }).join('\n')));
+                  }
+          } catch (error) {
+            console.error(error);
+          }
         }
         if(command === 'skip'){
-          let song = client.player.skip(message);
-          if(song)
-              message.channel.send(`${song.name} was skipped!`);
+          try{
+            let song = await client.player.skip(message);
+            if(song){
+                const embed = new MessageEmbed()
+                  .setColor('#6EC72D')
+                  .setDescription(`${song.name} was skipped!`)
+                message.reply(embed)
+                return
+            }
+          } catch (error) {
+            console.error(error);
+          }
         }
         if(command === 'clearqueue'){
-          let isDone = client.player.clearQueue(message);
-          if(isDone)
-              message.channel.send('Queue was cleared!');
+          try{
+            let isDone = await client.player.clearQueue(message);
+            if(isDone){
+                const embed = new MessageEmbed()
+                  .setColor('#E21717')
+                  .setDescription('Queue was cleared!')
+                message.reply(embed)
+                return
+            }
+          } catch (error) {
+            console.error(error);
+          }
         }
         if(command === 'remove'){
-          const args = message.content.slice(prefix.length + command.length).trim();
-          let SongID = parseInt(args[0])-1;          
-          let song = client.player.remove(message, SongID);
-          if(song)
-              message.channel.send(`Removed song ${song.name} (${args[0]}) from the Queue!`);
+          try{
+            const args = message.content.slice(prefix.length + command.length).trim();
+            let SongID = parseInt(args[0])-1;          
+            let song = await client.player.remove(message, SongID);
+            if(song){
+                const embed = new MessageEmbed()
+                  .setColor('#E21717')
+                  .setDescription(`Removed song ${song.name} (${args[0]}) from the Queue!`)
+                message.reply(embed)
+                return
+            }
+          } catch (error) {
+            console.error(error);
+          }
         }
 
         }
