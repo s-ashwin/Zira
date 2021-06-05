@@ -15,7 +15,7 @@ const prefix = "!";
 
 const { Player } = require("discord-music-player");
 const player = new Player(client, {
-  leaveOnEnd: false,
+  leaveOnEnd: true,
   leaveOnStop: true,
   leaveOnEmpty: true,
   timeout: 0,
