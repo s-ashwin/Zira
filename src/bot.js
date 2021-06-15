@@ -87,9 +87,6 @@ client.on('message', async(message)=>{
         if(message.content.toLowerCase()==='hey zira' || message.content.toLowerCase()==='zira'){
             message.reply(help)        
         }
-        if(message.content.toLowerCase()===`what's your name` || message.content.toLowerCase()===`what is your name` || message.content.toLowerCase()===`who are you`){
-            message.reply(`Hey ${message.author.username}! This is Zira, I am a Bot`);
-        }
 
         //THANKS
         if (message.content.toLowerCase().includes("thank")) {
@@ -100,7 +97,8 @@ client.on('message', async(message)=>{
         if (message.content.toLowerCase().startsWith("be like")) {
           const args = message.content.slice(7).trim();
           if (args) {
-            message.channel.send({files: [{attachment: `https://belikebill.ga/billgen-API.php?default=1&name=${args}`,name: "meme.jpeg"}]})
+            const {data} = await axios.get(`https://api.genderize.io/?name=${args}`);
+            message.channel.send({files: [{attachment: `https://belikebill.ga/billgen-API.php?default=1&name=${args}&sex=${data.gender.charAt(0)}`,name: "meme.jpeg"}]})
           } else {
             message.reply("Please provide a name")
           }
@@ -374,9 +372,6 @@ client.on('message', async(message)=>{
                         return `${i === 0 ? `**Now Playing**` : `**#${i+1}**`} - ${song.name} `
                     }).join('\n')))
                 message.reply(embed)
-                // message.channel.send(`**Queue:**\n`+(queue.songs.map((song, i) => {
-                //     return `${i === 0 ? `**Now Playing**` : `**#${i+1}**`} - ${song.name} `
-                // }).join('\n')));
                   }
           } catch (error) {
             console.error(error);
