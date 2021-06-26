@@ -27,6 +27,18 @@ let help = null
 
 client.player = player;
 
+client.player.on('songAdd',  (message, queue, song) => {
+      const embed = new MessageEmbed()
+        .setColor('#8D3DAF')
+        .setDescription(`Added ${song.name} to the queue`)
+      message.reply(embed)
+}).on('songFirst',  (message, song) =>{
+      const embed = new MessageEmbed()
+        .setColor('#8D3DAF')
+        .setDescription(`🎧 Started playing ${song.name}`)
+      message.reply(embed)
+});
+
 client.player.on('error', (error, message) => {
   switch (error) {
     case 'SearchIsNull':
@@ -294,24 +306,12 @@ client.on('message', async(message)=>{
           if (args) {
             
                 try {
-                  if(client.player.isPlaying(message)) {
-                    let song = await client.player.addToQueue(message, args);        
+                  
+                    let song = await client.player.play(message, args);          
                     if(song){
-                        const embed = new MessageEmbed()
-                          .setColor('#8D3DAF')
-                          .setDescription(`Added ${song.name} to the queue`)
-                        message.reply(embed)
-                        return;
-                      }
-                  } else {
-                      let song = await client.player.play(message, args);          
-                      if(song){
-                        const embed = new MessageEmbed()
-                          .setColor('#8D3DAF')
-                          .setDescription(`🎧 Started playing ${song.name}`)
-                        message.reply(embed)
-                        return;
-                      }
+                      
+                      return;
+                      
                   }
                 } catch (error) {
                   console.error(error);
