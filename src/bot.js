@@ -168,8 +168,8 @@ client.on('message', async(message)=>{
                           const {data} = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${args}&appid=${process.env.WEATHER_API_KEY}`);
                           const embed = new MessageEmbed()
                             .setColor('#E03B8B')
-                            .setTitle(`${args}`)
-                            .setDescription(`Temperature: ${Math.round(data.main.temp - 273.15)} °C \n Feels Like: ${Math.round(data.main.feels_like - 273.15)} °C \n Humidity: ${data.main.humidity}%`)
+                            .setTitle(`${args.toUpperCase()}`)
+                            .setDescription(`Temperature: ${Math.round(data.main.temp - 273.15)} °C \nFeels Like: ${Math.round(data.main.feels_like - 273.15)} °C \nHumidity: ${data.main.humidity}%`)
                           message.reply(embed)
                         } catch (error) {
                           console.error(error);
