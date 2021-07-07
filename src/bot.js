@@ -110,7 +110,7 @@ client.on('message', async(message)=>{
           const args = message.content.slice(7).trim();
           if (args) {
             const {data} = await axios.get(`https://api.genderize.io/?name=${args}`);
-            message.channel.send({files: [{attachment: `https://belikebill.ga/billgen-API.php?default=1&name=${args}&sex=${data.gender.charAt(0)}`,name: "meme.jpeg"}]})
+            message.channel.send({files: [{attachment: `https://belikebill.ga/billgen-API.php?default=1&name=${args}&sex=${data.gender.charAt(0) || "m"}`,name: "meme.jpeg"}]})
           } else {
             message.reply("Please provide a name")
           }
