@@ -84,12 +84,6 @@ client.on('ready', ()=>{
 
 })
 
-client.on('guildMemberAdd', member => {
-  const channel = member.guild.channels.cache.find(ch => ch.name === 'member-log');
-  if (!channel) return;
-  channel.send(`Welcome to the server, ${member}`);
-});
-
 client.on('message', async(message)=>{
     if(!message.author.bot){
         //GENERAL
@@ -168,7 +162,7 @@ client.on('message', async(message)=>{
                           const {data} = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${args}&appid=${process.env.WEATHER_API_KEY}`);
                           const embed = new MessageEmbed()
                             .setColor('#E03B8B')
-                            .setTitle(`${args.toUpperCase()}`)
+                            .setTitle(args[0].toUpperCase() + args.slice(1))
                             .setDescription(`Temperature: ${Math.round(data.main.temp - 273.15)} °C \nFeels Like: ${Math.round(data.main.feels_like - 273.15)} °C \nHumidity: ${data.main.humidity}%`)
                           message.reply(embed)
                         } catch (error) {
@@ -190,7 +184,7 @@ client.on('message', async(message)=>{
                           if(data.Response ==='True' && data.Poster!== 'N/A'){
                             const embed = new MessageEmbed()
                               .setColor('#03C6C7')
-                              .setTitle(`${args}`)
+                              .setTitle(args[0].toUpperCase() + args.slice(1))
                               .setImage(data.Poster)
                               .setDescription(`**Plot:** ${data.Plot} \n**Director:** ${data.Director} \n**Actors:** ${data.Actors} \n**IMDb Rating:** ${data.imdbRating}/10`)
                             message.reply(embed)
@@ -198,7 +192,7 @@ client.on('message', async(message)=>{
                           else if(data.Response ==='True'){
                             const embed = new MessageEmbed()
                               .setColor('#03C6C7')
-                              .setTitle(`${args}`)
+                              .setTitle(args[0].toUpperCase() + args.slice(1))
                               .setImage(data.Poster)
                               .setDescription(`**Plot:** ${data.Plot} \n**Director:** ${data.Director}`)
                             message.reply(embed)
@@ -226,7 +220,7 @@ client.on('message', async(message)=>{
                     if (data.list[0]) {
                       const embed = new MessageEmbed()
                           .setColor('#0099ff')
-                          .setTitle(`${args}`)
+                          .setTitle(args[0].toUpperCase() + args.slice(1))
                           .setDescription(data.list[0].definition)
                       message.reply(embed)
                     }
